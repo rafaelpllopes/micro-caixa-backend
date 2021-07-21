@@ -5,8 +5,11 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 
 ## Ambiente
 - Python 3.8.10
-- Flask
 - Postgresql
+- docker (Vou usar para o banco de dados)
+
+### requisitos para a API
+- flask
 
 ## Objetivos
 
