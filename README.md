@@ -6,10 +6,34 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 ## Ambiente
 - Python 3.8.10
 - Postgresql
-- docker (Vou usar para o banco de dados)
+- Docker 
 
 ### requisitos para a API
-- flask
+- Flask==2.0.1
+- Flask-Migrate==3.0.1
+- Flask-Script==2.0.6
+- Flask-SQLAlchemy==2.5.1
+- SQLAlchemy==1.4.21
+- psycopg2-binary==2.9.1
+
+### Estrutura do Banco de Dados 
+**Produtos**
+    * id
+    * nome
+    * valor
+**Clientes**
+    * id
+    * nome
+**Vendedores**
+    * id
+    * nome
+**Vendas**
+    * id
+    * vendedor (fk)
+    * data e hora
+    * cliente (fk)
+    * itens (fk)
+    * quantidade
 
 ## Objetivos
 
@@ -19,6 +43,6 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 4. Lançar uma venda (data/hora, vendedor, cliente, itens e quantidades;
 5. Consultar comissões de dado vendedor em dado período;
 
-## Estrutura
+## Estrutura do projeto
 
 ## Como executar

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 class Config(object):
@@ -6,10 +7,11 @@ class Config(object):
             CSRF: Habilita o uso de criptografia
             SECRET: Utilizada para criar chaves e valores criptografados
             APP: recebe a propriedade do app, de acordo com o tipo do ambiente
+            SQLALCHEMY_DATABASE_URI: variavel que contém o acesso a url do banco de dados
     """
     CSRF_ENABLED = True
-    SECRET = os.getenv('SECRET_FLASK') # carregar a variavel de ambiente SECRET_FLASK com a chave 
-    APP = None
+    SECRET = os.getenv('SECRET_FLASK') # carregar a variavel de ambiente SECRET_FLASK com a chave
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 class DevConfig(Config):
     """
@@ -69,6 +71,7 @@ app_config = {
 app_active = os.getenv('FLASK_ENV') # carregar a variavel de ambiente FLASK_ENV
 
 """
- export FLASK_ENV=development
- export SECRET_FLASK=*djjuqWEGJ3355@3fdf
+    export FLASK_ENV=development
+    export SECRET_FLASK=*djjuqWEGJ3355@3fdf
+    export DATABASE_URL="postgresql://localhost/micro_caixa"
 """
