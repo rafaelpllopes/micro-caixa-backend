@@ -58,9 +58,9 @@ class ProducaoConfig(Config):
         app_config['dev'], para utilizar como desenvolvedor
 """
 app_config = {
-    'dev': DevConfig(),
-    'teste': TesteConfig(),
-    'producao': ProducaoConfig()
+    'development': DevConfig(),
+    'production': ProducaoConfig(),
+    'testing': TesteConfig()
 }
 
 """
@@ -69,6 +69,6 @@ app_config = {
 app_active = os.getenv('FLASK_ENV') # carregar a variavel de ambiente FLASK_ENV
 
 """
- export FLASK_ENV=dev
+ export FLASK_ENV=development
  export SECRET_FLASK=*djjuqWEGJ3355@3fdf
 """
