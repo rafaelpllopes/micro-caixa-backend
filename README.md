@@ -8,7 +8,7 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 - Postgresql
 - Docker 
 
-### requisitos para a API
+### Requisitos para a API
 - Flask==2.0.1
 - Flask-Migrate==3.0.1
 - Flask-Script==2.0.6
@@ -17,23 +17,23 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 - psycopg2-binary==2.9.1
 
 ### Estrutura do Banco de Dados 
-**Produtos**
-    * id
-    * nome
-    * valor
-**Clientes**
-    * id
-    * nome
-**Vendedores**
-    * id
-    * nome
-**Vendas**
-    * id
-    * vendedor (fk)
-    * data e hora
-    * cliente (fk)
-    * itens (fk)
-    * quantidade
+- **Produtos**
+   - id
+   - nome
+   - valor
+- **Clientes**
+    - id
+    - nome
+- **Vendedores**
+    - id
+    - nome
+- **Vendas**
+    - id
+    - vendedor (fk)
+    - data e hora
+    - cliente (fk)
+    - itens (fk)
+    - quantidade
 
 ## Objetivos
 
