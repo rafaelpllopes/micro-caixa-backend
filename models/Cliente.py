@@ -82,6 +82,6 @@ class Cliente(db.Model):
             db.session.close()
 
     def __repr__(self) -> str:
-        return f"id: {self.id}, nome: {self.nome}, criado: {self.criado}, atualizado: {self.atualizado}"
+        return f"Cliente -> id: {self.id}, nome: {self.nome}, criado: {self.criado}, atualizado: {self.atualizado}"
         
             
