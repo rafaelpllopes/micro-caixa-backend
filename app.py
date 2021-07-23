@@ -18,42 +18,60 @@ def create_app(config_name):
     db = SQLAlchemy(config.APP)
     db.init_app(app)
 
-    @app.route('/')
+    @app.route('/', methods=['GET'])
     def index():
+        """
+            Metodo somente para informar se a API esta rodando
+        """
         return jsonify({ 'status' : 'API está rodando' }), 200
 
     @app.route('/clientes', methods=['GET', 'POST'])
     def clientes_listar_inserir():
+        """
+            Metodo para inserir um cliente "POST", ou trazer todos os clientes "GET"
+        """
         cliente_controller = ClienteController()
         if request.method == 'POST':
             try:
                 resposta = request.json
                 if resposta:
-                    cliente_controller.inserir(resposta)
-                    return jsonify({ 'msg': 'Cliente inserido com sucesso', 'status': 201}), 201
+                    nome = request.json['nome']
+                    res, status = cliente_controller.inserir(nome)
+                    return jsonify(res), status
             except Exception as erro:
-                return jsonify({ "erro": erro })
+                print({ "Erro: ": erro })
         
-        resposta = cliente_controller.listar_tudo()
-        return jsonify(resposta), 200
+        resposta, status = cliente_controller.listar_tudo()
+        return jsonify(resposta), status
 
-    @app.route('/clientes/<id>', methods=['GET', 'PUT'])
+    @app.route('/clientes/<id>', methods=['GET', 'PUT', 'DELETE'])
     def cliente_consultar_atualizar_deletar(id: int):
+        """
+            Metodo para consultar "GET", ou atualizar "PUT", ou deletar "DELETE" um cliente pela id
+        """
         cliente_controller = ClienteController()
         if not id:
             return jsonify({ 'msg': 'Requer id', 'status': 404 }), 404
 
-        # if request.method == 'PUT':
-        #     try:
-        #         resposta = request.json
-        #         if resposta:
-        #             cliente_controller.inserir(resposta)
-        #             return jsonify({ 'msg': 'Cliente alterado com sucesso', 'status': 201 }), 201
-        #     except Exception as erro:
-        #         return jsonify({ "erro": erro })
+        if request.method == 'PUT':
+            try:
+                resposta = request.json
+                if resposta:
+                    nome = resposta['nome']
+                    res, status = cliente_controller.atualizar(id, nome)
+                    return jsonify(res), status
+            except Exception as erro:
+                return jsonify({ "erro": erro })
         
-        resposta = cliente_controller.lista_por_id(id)
-        return jsonify(resposta), 200
+        if request.method == 'DELETE':
+            try:
+                res = cliente_controller.deletar(id)
+                return jsonify(res), res['status']                
+            except Exception as erro:
+                return jsonify({ "erro": erro })
+        
+        resposta, status = cliente_controller.lista_por_id(id)
+        return jsonify(resposta), status
 
     return app
 

@@ -12,17 +12,24 @@ class Cliente(db.Model):
     atualizado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), onupdate=db.func.current_timestamp(), nullable=False)
 
     def get_all(self):
+        """
+            Metodo faz a consulta na tabela cliente no banco de dados e traz todos os cadastrados
+        """
         resposta = []
         try:
             resposta = db.session.query(Cliente).all()
         except Exception as erro:
             print(erro)
+            raise Exception('Erro ao listar os clientes')
         finally:
             db.session.close()
         
         return resposta
     
     def get_by_id(self, id):
+        """
+            Metodo traz um cliente no tabela cliente no banco de dados pelo seu id
+        """
         resposta = []
         try:
             resposta = db.session.query(Cliente).filter_by(id=id).one()
@@ -34,11 +41,43 @@ class Cliente(db.Model):
         return resposta
     
     def add(self, nome):
+        """
+            Metodo adiciona um cliente pelo nome, tabela cliente no banco de dados
+        """
         try:
             db.session.add(nome)
             db.session.commit()
         except Exception as erro:
             print(erro)
+            raise Exception('Erro ao inserir o cliente')
+        finally:
+            db.session.close()
+        
+    def update(self, id, nome):
+        """
+            Metodo responsavel por realizar a atualizaçao de um cliente pela sua id
+        """
+        try:
+            atualizar = db.session.query(Cliente).filter_by(id=id).first()
+            atualizar.nome = nome
+            db.session.commit()
+        except Exception as erro:
+            print(f"Erro: {erro}")
+            raise Exception('Erro ao atualizar o cliente')
+        finally:
+            db.session.close()
+
+    def delete(self, id):
+        """
+            Metodo responsavle por deletar um cliente para id
+        """
+        try:
+            deletar = db.session.query(Cliente).filter_by(id=id).first()
+            db.session.delete(deletar)
+            db.session.commit()
+        except Exception as erro:
+            print(erro)
+            raise Exception('Erro ao deletar o cliente')
         finally:
             db.session.close()
 
