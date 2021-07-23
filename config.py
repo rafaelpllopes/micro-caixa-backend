@@ -11,7 +11,8 @@ class Config(object):
     """
     CSRF_ENABLED = True
     SECRET = os.getenv('SECRET_FLASK') # carregar a variavel de ambiente SECRET_FLASK com a chave
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    APP = None
 
 class DevConfig(Config):
     """
@@ -73,5 +74,5 @@ app_active = os.getenv('FLASK_ENV') # carregar a variavel de ambiente FLASK_ENV
 """
     export FLASK_ENV=development
     export SECRET_FLASK=*djjuqWEGJ3355@3fdf
-    export DATABASE_URL="postgresql://localhost/micro_caixa"
+    export DATABASE_URL=postgresql+psycopg2://postgres:123@localhost:5432/micro_caixa
 """

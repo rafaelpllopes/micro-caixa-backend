@@ -17,23 +17,36 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 - psycopg2-binary==2.9.1
 
 ### Estrutura do Banco de Dados 
-- **Produtos**
+- **Produto**
    - id
    - nome
    - valor
-- **Clientes**
+   - imagem
+   - qtd
+   - criado
+   - atualizado
+- **Cliente**
     - id
     - nome
-- **Vendedores**
+    - criado
+    - atualizado
+- **Vendedor**
     - id
     - nome
-- **Vendas**
+    - criado
+    - atualizado
+- **Venda**
     - id
     - vendedor (fk)
     - data e hora
     - cliente (fk)
-    - itens (fk)
+    - produto (fk)
     - quantidade
+
+### Migrate
+```python migrate.py db init``` gerar as configurações do migrate, executa somente na primeira vez
+```python migrate.py db migrate```
+```python migrate.py db upgrade```
 
 ## Objetivos
 
