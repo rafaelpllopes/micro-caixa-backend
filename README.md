@@ -38,10 +38,16 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 - **Venda**
     - id
     - vendedor (fk)
-    - data e hora
     - cliente (fk)
+    - criado
+    - atualizado
+- **Carrinho**
+    - id
+    - venda (fk)
     - produto (fk)
     - quantidade
+    - criado
+    - atualizado
 
 ### Migrate
 - ```python migrate.py db init``` gerar as configurações do migrate, executa somente na primeira vez
