@@ -40,12 +40,12 @@ class Cliente(db.Model):
         
         return resposta
     
-    def add(self, nome):
+    def add(self, cliente):
         """
             Metodo adiciona um cliente pelo nome, tabela cliente no banco de dados
         """
         try:
-            db.session.add(nome)
+            db.session.add(cliente)
             db.session.commit()
         except Exception as erro:
             print(erro)

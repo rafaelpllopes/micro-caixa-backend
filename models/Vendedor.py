@@ -40,12 +40,12 @@ class Vendedor(db.Model):
         
         return resposta
     
-    def add(self, nome):
+    def add(self, vendedor):
         """
             Metodo adiciona um vendedor pelo nome, tabela vendedor no banco de dados
         """
         try:
-            db.session.add(nome)
+            db.session.add(vendedor)
             db.session.commit()
         except Exception as erro:
             print(erro)
