@@ -22,7 +22,6 @@ API Rest responsavel controlar um sistema de vendas para consumidor
    - nome
    - valor
    - imagem
-   - qtd
    - criado
    - atualizado
 - **Cliente**
@@ -45,6 +44,7 @@ API Rest responsavel controlar um sistema de vendas para consumidor
     - id
     - venda (fk)
     - produto (fk)
+    - valor
     - quantidade
     - criado
     - atualizado
