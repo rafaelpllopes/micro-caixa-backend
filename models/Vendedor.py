@@ -11,7 +11,6 @@ class Vendedor(db.Model):
     criado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), nullable=False)
     atualizado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), onupdate=db.func.current_timestamp(), nullable=False)
 
-
     def get_all(self):
         """
             Metodo faz a consulta na tabela vendedor no banco de dados e traz todos os cadastrados

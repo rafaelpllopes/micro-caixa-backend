@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from config import app_active, app_config
 from controllers.Cliente import ClienteController
 from controllers.Vendedor import VendedorController
+from controllers.Produto import ProdutoController
 
 config = app_config[app_active]
 
@@ -15,7 +16,7 @@ def create_app(config_name):
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
     app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db = SQLAlchemy(config.APP)
     db.init_app(app)
 
@@ -122,5 +123,56 @@ def create_app(config_name):
         resposta, status = controller.lista_por_id(id)
         return jsonify(resposta), status
 
-    return app
+    @app.route('/produtos', methods=['GET', 'POST'])
+    def produto_listar_inserir():
+        """
+            Metodo para inserir um produto "POST", ou trazer todos os Produto "GET"
+        """
+        controller = ProdutoController()
+        if request.method == 'POST':
+            try:
+                resposta = request.json
+                if resposta:
+                    nome = resposta['nome']
+                    valor = resposta['valor']
+                    
+                    res, status = controller.inserir(nome=nome, valor=valor)
+                    return jsonify(res), status
+            except Exception as erro:
+                print({ "Erro: ": erro })
+        
+        resposta, status = controller.listar_tudo()
+        return jsonify(resposta), status
 
+    @app.route('/produtos/<id>', methods=['GET', 'PUT', 'DELETE'])
+    def produto_consultar_atualizar_deletar(id: int):
+        """
+            Metodo para consultar "GET", ou atualizar "PUT", ou deletar "DELETE" um produto pela id
+        """
+        controller = ProdutoController()
+        if not id:
+            return jsonify({ 'msg': 'Requer id', 'status': 404 }), 404
+
+        if request.method == 'PUT':
+            try:
+                resposta = request.json
+                if resposta:
+                    nome = resposta['nome']
+                    valor = resposta['valor']
+                    
+                    res, status = controller.atualizar(id, nome, valor)
+                    return jsonify(res), status
+            except Exception as erro:
+                return jsonify({ "erro": erro })
+        
+        if request.method == 'DELETE':
+            try:
+                res = controller.deletar(id)
+                return jsonify(res), res['status']                
+            except Exception as erro:
+                return jsonify({ "erro": erro })
+        
+        resposta, status = controller.lista_por_id(id)
+        return jsonify(resposta), status
+
+    return app
