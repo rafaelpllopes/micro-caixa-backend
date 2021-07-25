@@ -72,7 +72,5 @@ app_config = {
 app_active = os.getenv('FLASK_ENV') # carregar a variavel de ambiente FLASK_ENV
 
 """
-    export FLASK_ENV=development
-    export SECRET_FLASK=*djjuqWEGJ3355@3fdf
-    export DATABASE_URL=postgresql+psycopg2://postgres:123@localhost:5432/micro_caixa
+export FLASK_ENV=development && export SECRET_FLASK=*djjuqWEGJ3355@3fdf && export DATABASE_URL=postgresql+psycopg2://postgres:123@localhost:5432/micro_caixa
 """
