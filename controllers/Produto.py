@@ -41,6 +41,9 @@ class ProdutoController:
         if not nome and not valor and not comissao:
             return { 'msg': 'Não foi possivel cadastrar o produto', 'status': 400 }, 400
 
+        if self.__verificar_comissao(comissao):
+            return { 'msg': 'Não foi possivel cadastrar o produto', 'status': 400 }, 400
+
         try:
             self.produto_model.add(Produto(nome=nome, valor=valor, comissao_percentual=comissao))
             return { 'msg': 'Produto cadastrado com sucesso', 'status': 201 }, 201
@@ -48,12 +51,20 @@ class ProdutoController:
             print(f'Erro: {erro}')
             return { 'msg': 'Não foi possivel cadastrar o produto', 'status': 400 }, 400
 
+    def __verificar_comissao(self, comissao):
+        if comissao > float(10):
+            return True
+        return False
+
     def atualizar(self, id, nome, valor, comissao):
         """
             Metodo responsavel por atualizar um produto pelo sua id
         """
-        if not id and not nome and not valor:
-            return { 'msg': 'Não foi possivel atualizar o produto', 'status': 400 }, 400
+        if not nome and not valor and not comissao:
+            return { 'msg': 'Não foi possivel cadastrar o produto', 'status': 400 }, 400
+
+        if self.__verificar_comissao(comissao):
+            return { 'msg': 'Não foi possivel cadastrar o produto', 'status': 400 }, 400
 
         try:
             self.produto_model.update(id, nome, valor, comissao)
