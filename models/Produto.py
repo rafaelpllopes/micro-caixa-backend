@@ -10,7 +10,6 @@ class Produto(db.Model):
     nome=db.Column(db.String(100), nullable=False)
     valor=db.Column(db.Numeric(10,2), nullable=False)
     comissao_percentual=db.Column(db.Numeric(10,2), default=0)
-    imagem=db.Column(db.Text(), nullable=True)
     criado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), nullable=False)
     atualizado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), onupdate=db.func.current_timestamp(), nullable=False)
 
@@ -56,7 +55,7 @@ class Produto(db.Model):
         finally:
             db.session.close()
         
-    def update(self, id, nome, valor, imagem):
+    def update(self, id, nome, valor, comissao):
         """
             Metodo responsavel por realizar a atualizaçao de um produto pela sua id
         """
@@ -68,8 +67,8 @@ class Produto(db.Model):
             if valor:
                 atualizar.valor = valor
 
-            if imagem:
-                atualizar.imagem = imagem
+            if comissao:
+                atualizar.comissao_percentual = comissao
                 
             db.session.commit()
         except Exception as erro:
@@ -93,4 +92,4 @@ class Produto(db.Model):
             db.session.close()
 
     def __repr__(self) -> str:
-        return f"Produto -> id: {self.id}, nome: {self.nome}, valor: {self.valor}, comissao: {self.comissao_percentual}%, imagem: {self.imagem}, criado: {self.criado}, atualizado: {self.atualizado}"
+        return f"Produto -> id: {self.id}, nome: {self.nome}, valor: {self.valor}, comissao: {self.comissao_percentual}%, criado: {self.criado}, atualizado: {self.atualizado}"

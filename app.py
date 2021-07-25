@@ -131,13 +131,16 @@ def create_app(config_name):
         controller = ProdutoController()
         if request.method == 'POST':
             try:
-                resposta = request.json
-                if resposta:
-                    nome = resposta['nome']
-                    valor = resposta['valor']
-                    
-                    res, status = controller.inserir(nome=nome, valor=valor)
+                
+                nome = request.json['nome']
+                valor = request.json['valor']
+                comissao = request.json['comissao']
+                
+                if nome and valor and comissao:
+                    res, status = controller.inserir(nome=nome, valor=valor, comissao=comissao)
                     return jsonify(res), status
+                else:
+                    return jsonify({ 'msg': 'Os dados nome, valor, comissao são obrigatorios', "status": 404 }), 404
             except Exception as erro:
                 print({ "Erro: ": erro })
         
@@ -155,13 +158,15 @@ def create_app(config_name):
 
         if request.method == 'PUT':
             try:
-                resposta = request.json
-                if resposta:
-                    nome = resposta['nome']
-                    valor = resposta['valor']
-                    
-                    res, status = controller.atualizar(id, nome, valor)
+                nome = request.json['nome']
+                valor = request.json['valor']
+                comissao = request.json['comissao']
+                
+                if nome and valor and comissao:
+                    res, status = controller.atualizar(id, nome, valor, comissao)
                     return jsonify(res), status
+                else:
+                    return jsonify({ 'msg': 'Os dados nome, valor, comissao são obrigatorios', "status": 404 }), 404
             except Exception as erro:
                 return jsonify({ "erro": erro })
         

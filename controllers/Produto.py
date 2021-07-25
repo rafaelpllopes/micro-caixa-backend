@@ -34,21 +34,21 @@ class ProdutoController:
 
         return {}, 404
         
-    def inserir(self, nome, valor, imagem=''):
+    def inserir(self, nome, valor, comissao):
         """
             Metodo que insere um novo produto
         """
-        if not nome and not valor:
+        if not nome and not valor and not comissao:
             return { 'msg': 'Não foi possivel cadastrar o produto', 'status': 400 }, 400
 
         try:
-            self.produto_model.add(Produto(nome=nome, valor=valor, imagem=imagem))
+            self.produto_model.add(Produto(nome=nome, valor=valor, comissao_percentual=comissao))
             return { 'msg': 'Produto cadastrado com sucesso', 'status': 201 }, 201
         except Exception as erro:
             print(f'Erro: {erro}')
             return { 'msg': 'Não foi possivel cadastrar o produto', 'status': 400 }, 400
 
-    def atualizar(self, id, nome, valor, imagem=''):
+    def atualizar(self, id, nome, valor, comissao):
         """
             Metodo responsavel por atualizar um produto pelo sua id
         """
@@ -56,7 +56,7 @@ class ProdutoController:
             return { 'msg': 'Não foi possivel atualizar o produto', 'status': 400 }, 400
 
         try:
-            self.produto_model.update(id, nome, valor, imagem)
+            self.produto_model.update(id, nome, valor, comissao)
             return { 'msg': 'Cliente alterado com sucesso', 'status': 202 }, 202
         except Exception as erro:
             print(f'Erro: {erro}')
@@ -80,4 +80,4 @@ class ProdutoController:
         """
             Metodo responsavel por traduzir a resposta vinda do banco de dados
         """
-        return { 'id': produto.id, 'nome': produto.nome, 'valor': "{:.2f}".format(float(produto.valor)), 'imagem': produto.imagem, 'criado': produto.criado, 'atualizado': produto.atualizado }
+        return { 'id': produto.id, 'nome': produto.nome, 'valor': "{:.2f}".format(float(produto.valor)), 'comissao': "{:.2f}".format(float(produto.comissao_percentual)), 'criado': produto.criado, 'atualizado': produto.atualizado }
