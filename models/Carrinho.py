@@ -2,8 +2,8 @@
 from models.Produto import Produto
 from flask_sqlalchemy import SQLAlchemy
 from config import app_active, app_config
-from models.Venda import Venda
 from models.Produto import Produto
+from models.Venda import Venda
 
 config = app_config[app_active]
 db = SQLAlchemy(config.APP)

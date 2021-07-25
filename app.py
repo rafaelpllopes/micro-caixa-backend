@@ -7,6 +7,7 @@ from config import app_active, app_config
 from controllers.Cliente import ClienteController
 from controllers.Vendedor import VendedorController
 from controllers.Produto import ProdutoController
+from controllers.Venda import VendaController
 
 config = app_config[app_active]
 
@@ -179,5 +180,62 @@ def create_app(config_name):
         
         resposta, status = controller.lista_por_id(id)
         return jsonify(resposta), status
+    
+    @app.route('/vendas', methods=['GET', 'POST'])
+    def venda_listar_inserir():
+        """
+            Metodo para inserir um vendas "POST", ou trazer todos os vendas "GET"
+        """
+        controller = VendaController()
+        if request.method == 'POST':
+            try:
+                
+                vendedor = request.json['vendedor']
+                cliente = request.json['cliente']
+                produtos = request.json['produtos']
+                
+                if vendedor and cliente and produto_listar_inserir:
+                    res, status = controller.inserir(vendedor=vendedor, cliente=cliente, produtos=produtos)
+                    return jsonify(res), status
+                else:
+                    return jsonify({ 'msg': 'Os dados nome, valor, comissao são obrigatorios', "status": 404 }), 404
+            except Exception as erro:
+                print({ "Erro: ": erro })
+        
+        resposta, status = controller.listar_tudo()
+        return jsonify(resposta), status
+
+    # @app.route('/vendas/<id>', methods=['GET', 'PUT', 'DELETE'])
+    # def venda_consultar_atualizar_deletar(id: int):
+    #     """
+    #         Metodo para consultar "GET", ou atualizar "PUT", ou deletar "DELETE" um produto pela id
+    #     """
+    #     controller = ProdutoController()
+    #     if not id:
+    #         return jsonify({ 'msg': 'Requer id', 'status': 404 }), 404
+
+    #     if request.method == 'PUT':
+    #         try:
+    #             nome = request.json['nome']
+    #             valor = request.json['valor']
+    #             comissao = request.json['comissao']
+                
+    #             if nome and valor and comissao:
+    #                 res, status = controller.atualizar(id, nome, valor, comissao)
+    #                 return jsonify(res), status
+    #             else:
+    #                 return jsonify({ 'msg': 'Os dados nome, valor, comissao são obrigatorios', "status": 404 }), 404
+    #         except Exception as erro:
+    #             return jsonify({ "erro": erro })
+        
+    #     if request.method == 'DELETE':
+    #         try:
+    #             res = controller.deletar(id)
+    #             return jsonify(res), res['status']                
+    #         except Exception as erro:
+    #             return jsonify({ "erro": erro })
+        
+    #     resposta, status = controller.lista_por_id(id)
+    #     return jsonify(resposta), status
 
     return app
