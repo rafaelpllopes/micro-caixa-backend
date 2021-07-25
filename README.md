@@ -28,17 +28,22 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 9. Entra na pasta do projeto ```cd micro-caixa-backend```
 10. Criar o ambiente virtual ```python3 -m venv venv```
 11. Instalar as dependencias ```pip install -r requirements.txt```
-12. Configurar as variaveis de ambiente ```export FLASK_ENV=development && export SECRET_FLASK=*djjuqWEGJ3355@3fdf && export DATABASE_URL=postgresql+psycopg2://postgres:senha_do_db@localhost:5445/micro_caixa```
+12. Configurar as variaveis de ambiente ```export FLASK_ENV=development && export SECRET_FLASK=*djjuqWEGJ3355@3fdf && export DATABASE_URL=postgresql+psycopg2://postgres:senha_do_db@localhost:5445/micro_caixa```, caso já tenha a pasta de migrations com as versions, senão executar a migração conforme baixo
 13. Entrar no ambiente virtual ```source venv/bin/activate```
 14. Executar as migrations ```python migrate.py db upgrade```
 15. Executar o projeto ```python run.py```
+
+### Migrate
+- ```python migrate.py db init``` gerar as configurações do migrate, executa somente na primeira vez
+- ```python migrate.py db migrate```
+- ```python migrate.py db upgrade```
 
 ### Estrutura do Banco de Dados 
 - **Produto**
    - id
    - nome
    - valor
-   - imagem
+   - comissao_percentual
    - criado
    - atualizado
 - **Cliente**
@@ -65,11 +70,6 @@ API Rest responsavel controlar um sistema de vendas para consumidor
     - quantidade
     - criado
     - atualizado
-
-### Migrate
-- ```python migrate.py db init``` gerar as configurações do migrate, executa somente na primeira vez
-- ```python migrate.py db migrate```
-- ```python migrate.py db upgrade```
 
 ## Objetivos
 
