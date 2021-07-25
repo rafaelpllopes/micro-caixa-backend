@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from config import app_active, app_config
 from models.Cliente import Cliente
@@ -21,15 +22,33 @@ class Venda(db.Model):
         """
         resposta = []
         try:
-            resposta = (db.session.query(Venda, Vendedor, Cliente, Carrinho)
-                        .outerjoin(Vendedor, Venda.vendedor == Vendedor.id)
-                        .outerjoin(Cliente, Venda.cliente == Cliente.id)
-                        .outerjoin(Venda.carrinho == Carrinho.id)
+            resposta = (db.session.query(Venda, Vendedor, Cliente)
+                        .join(Vendedor, Venda.vendedor == Vendedor.id)
+                        .join(Cliente, Venda.cliente == Cliente.id)
                         .order_by(Venda.criado)
                         ).all()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [Models - Venda.py - get_all]: {erro}')
             raise Exception('Erro ao listar as vendas')
+        finally:
+            db.session.close()
+        
+        return resposta
+    
+    def get_itens_carrinho(self, venda_id: int):
+        """
+            Metodo que traz todos os produtos do carrinho de uma venda pelo id da venda
+        """
+        resposta = []
+        try:
+            resposta = (db.session.query(Carrinho, Produto)
+                        .filter_by(venda=venda_id)
+                        .join(Produto, Carrinho.produto == Produto.id)
+                        .order_by(Carrinho.criado)
+                        ).all()
+        except Exception as erro:
+            print(f'Erro [Models - Venda.py - get_itens_carrinho]: {erro}')
+            raise Exception('Erro ao listar os itens do carrinho')
         finally:
             db.session.close()
         
@@ -49,7 +68,7 @@ class Venda(db.Model):
                         .filter_by(id=id)
                         ).one()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [Models - Venda.py]: {erro}')
         finally:
             db.session.close()
         
@@ -66,11 +85,11 @@ class Venda(db.Model):
             db.session.commit()
             self.__add_produtos_carrinho(venda.id, produtos)
         except Exception as erro:
-            print(erro)
+            print(f'Erro [Models - Venda.py]: {erro}')
             raise Exception('Erro ao inserir o venda')
         finally:
             db.session.close()
-    
+        
     def __verificar_existencia_produto(self, produtos):
         """
             Metodo responsavel por verificar a existencia de um produto
@@ -81,7 +100,7 @@ class Venda(db.Model):
                 db.session.commit()
             return True
         except Exception as erro:
-            print(erro)
+            print(f'Erro [Models - Venda.py]: {erro}')
         finally:
             db.session.close()
     
@@ -91,12 +110,25 @@ class Venda(db.Model):
         """
         try:           
             for produto in produtos:
-                db.session.add(Carrinho(venda=venda_id, produto=produto['id'], valor=produto['valor'], quantidade=produto['quantidade']))     
+                comissao = self.__verificar_comissao(produto['comissao'])
+                db.session.add(Carrinho(venda=venda_id, produto=produto['id'], valor=produto['valor'], quantidade=produto['quantidade'], comissao=comissao))     
                 db.session.commit()
         except Exception as erro:
-            print(f"Erro: {erro}")
+            print(f'Erro [Models - Venda.py]: {erro}')
             raise Exception('Erro ao inserir ao produtos do carrinho')
         
+    def __verificar_comissao(self, comissao):
+        hora = datetime.now().strftime('%H:%M:%S')
+        if hora >= '00:00:00' and hora <= '12:00:00':
+            valor_comissao = 5
+        else:
+            if comissao < 4:
+                valor_comissao = 4
+            else:
+                valor_comissao = comissao
+
+        return float(valor_comissao)
+
     # def update(self, id, nome, valor, comissao):
     #     """
     #         Metodo responsavel por realizar a atualizaçao de um produto pela sua id

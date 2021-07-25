@@ -49,6 +49,7 @@ class Carrinho(db.Model):
     venda=db.Column(db.Integer, db.ForeignKey(Venda.id), nullable=False)
     produto=db.Column(db.Integer, db.ForeignKey(Produto.id), nullable=False)
     valor=db.Column(db.Numeric(10,2), nullable=False)
+    comissao=db.Column(db.Numeric(10,2), nullable=False, default=0)
     quantidade=db.Column(db.Integer, nullable=True, default=0)
     criado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), nullable=False)
     atualizado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), onupdate=db.func.current_timestamp(), nullable=False)
