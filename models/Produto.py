@@ -9,6 +9,7 @@ class Produto(db.Model):
     id=db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
     nome=db.Column(db.String(100), nullable=False)
     valor=db.Column(db.Numeric(10,2), nullable=False)
+    comissao_percentual=db.Column(db.Numeric(10,2), default=0)
     imagem=db.Column(db.Text(), nullable=True)
     criado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), nullable=False)
     atualizado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), onupdate=db.func.current_timestamp(), nullable=False)
@@ -92,4 +93,4 @@ class Produto(db.Model):
             db.session.close()
 
     def __repr__(self) -> str:
-        return f"Produto -> id: {self.id}, nome: {self.nome}, valor: {self.valor}, imagem: {self.imagem}, criado: {self.criado}, atualizado: {self.atualizado}"
+        return f"Produto -> id: {self.id}, nome: {self.nome}, valor: {self.valor}, comissao: {self.comissao_percentual}%, imagem: {self.imagem}, criado: {self.criado}, atualizado: {self.atualizado}"
