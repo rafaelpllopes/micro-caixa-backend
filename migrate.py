@@ -46,7 +46,7 @@ class Venda(db.Model):
 
 class Carrinho(db.Model):
     id=db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
-    venda=db.Column(db.Integer, db.ForeignKey(Venda.id), nullable=False)
+    venda=db.Column(db.Integer, db.ForeignKey(Venda.id, ondelete='CASCADE'), nullable=False)
     produto=db.Column(db.Integer, db.ForeignKey(Produto.id), nullable=False)
     valor=db.Column(db.Numeric(10,2), nullable=False)
     comissao=db.Column(db.Numeric(10,2), nullable=False, default=0)

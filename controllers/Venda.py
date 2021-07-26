@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 from functools import reduce
 
 from sqlalchemy.ext.declarative.api import declared_attr
@@ -20,7 +19,7 @@ class VendaController:
             resposta = self.model.get_all()
             return list(map(lambda venda: self.__traduz(venda), resposta)), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Venda.py - listar_tudo]: {erro}')
         
         return [], 404
     
@@ -28,16 +27,29 @@ class VendaController:
         """
             Metodo que lista um venda pela sua id e traduz
         """
-        pass
-        # try:
-        #     resposta = self.model.get_by_id(id)
-        #     if resposta:
-        #         return self.__traduz(resposta), 200
-        # except Exception as erro:
-        #     print(f'Erro: {erro}')
-        #     return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
+        try:
+            resposta = self.model.get_by_id(id)
+            if resposta:
+                return self.__traduz(resposta), 200
+        except Exception as erro:
+            print(f'Erro: {erro}')
+            return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
 
-        # return {}, 404
+        return {}, 404
+
+    def lista_item_por_id(self, id: int):
+        """
+            Metodo que lista um venda pela sua id e traduz
+        """
+        try:
+            resposta = self.model.get_item_by_id(id)
+            if resposta:
+                return self.__traduz_item_carrinho(resposta), 200
+        except Exception as erro:
+            print(f'Erro: {erro}')
+            return { 'msg': 'Item não encontrado', 'status': 404 }, 404
+
+        return {}, 404
         
     def inserir(self, vendedor, cliente, produtos):
         """
@@ -51,32 +63,41 @@ class VendaController:
             self.model.add(venda=venda, produtos=produtos)
             return { 'msg': 'Venda cadastrado com sucesso', 'status': 201 }, 201
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Venda.py - inserir]: {erro}')
             return { 'msg': 'Não foi possivel cadastrar o venda', 'status': 400 }, 400
 
-    def atualizar(self, id, nome):
+    def atualizar(self, id, vendedor, cliente, produtos):
         """
             Metodo responsavel por atualizar uma venda pelo sua id
         """
-        pass
-        # try:
-        #     self.vendedor_model.update(id, nome)
-        #     return { 'msg': 'Venda alterado com sucesso', 'status': 202 }, 202
-        # except Exception as erro:
-        #     print(f'Erro: {erro}')
-        #     return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
+        try:
+            self.model.update(id=id, vendedor=vendedor, cliente=cliente, produtos=produtos)
+            return { 'msg': 'Venda atualizada com sucesso', 'status': 202 }, 202
+        except Exception as erro:
+            print(f'Erro [Controllers - Venda.py - atualizar]: {erro}')
+            return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
 
-    def deletar(self, id):
+    def deletar_venda(self, id):
         """
             Metodo responsavel por deletar uma venda pela id
         """
-        pass
-        # try:
-        #     self.vendedor_model.delete(id)
-        #     return { 'msg': 'Venda deletado com sucesso', 'status': 202 }
-        # except Exception as erro:
-        #     print(f'Erro: {erro}')
-        #     return { 'msg': 'Venda não encontrado', 'status': 404 }
+        try:
+            self.model.delete_venda(id)
+            return { 'msg': 'Venda deletado com sucesso', 'status': 202 }, 202
+        except Exception as erro:
+            print(f'Erro: {erro}')
+            return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
+    
+    def deletar_item_carrinho(self, id_venda, id_item):
+        """
+            Metodo responsavel por deletar um item do carrinho pela id
+        """
+        try:
+            self.model.delete_item_carrinho(id_venda=id_venda, id_item=id_item)
+            return { 'msg': 'Item removido com sucesso', 'status': 202 }, 202
+        except Exception as erro:
+            print(f'Erro: {erro}')
+            return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
 
     def __consulta_produtos(self, venda_id):
         return self.model.get_itens_carrinho(venda_id)
@@ -92,7 +113,7 @@ class VendaController:
             'comissao_vendedor': self.__calcular_comissao(itens),
             'total_venda': self.__calcular_total_venda(itens),
             'vendedor': { 'id': venda.Vendedor.id, "nome": venda.Vendedor.nome }, 
-            'cliente': { 'id': venda.Cliente.nome, 'nome': venda.Cliente.nome  },
+            'cliente': { 'id': venda.Cliente.id, 'nome': venda.Cliente.nome  },
             'itens:': self.__traz_produtos(itens)
         }
     
@@ -118,7 +139,6 @@ class VendaController:
             Metodo responsavel por calcular a comissão
         """
         itens_calcular = list(map(lambda item: (item.Carrinho.valor * item.Carrinho.quantidade) * (item.Carrinho.comissao / 100), itens))
-        print(itens_calcular)
         return "{:.2f}".format(reduce(lambda a, b: a + b, itens_calcular))
 
     def __calcular_total_venda(self, itens):
@@ -127,3 +147,15 @@ class VendaController:
         """
         itens_calcular = list(map(lambda item: item.Carrinho.valor * item.Carrinho.quantidade, itens))
         return "{:.2f}".format(reduce(lambda a, b: a + b, itens_calcular))
+
+    def __traduz_item_carrinho(self, item):
+        return { 
+                    'id': item.id,
+                    'venda': item.venda,
+                    'produto': item.produto,
+                    'valor': float(item.valor),
+                    'comissao': float(item.comissao),
+                    'quantidade': item.quantidade,
+                    'criado': item.criado, 
+                    'atualizado': item.atualizado 
+                }

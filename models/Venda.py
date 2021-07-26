@@ -8,7 +8,7 @@ from models.Produto import Produto
 
 config = app_config[app_active]
 db = SQLAlchemy(config.APP)
-    
+
 class Venda(db.Model):
     id=db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
     vendedor=db.Column(db.Integer, db.ForeignKey(Vendedor.id), nullable=False)
@@ -58,17 +58,31 @@ class Venda(db.Model):
         """
             Metodo traz uma venda no tabela produto no banco de dados pelo seu id
         """
-        resposta = []
+        resposta = {}
         try:
-            resposta = (db.session.query(Venda, Vendedor, Cliente, Carrinho)
-                        .outerjoin(Vendedor, Venda.vendedor == Vendedor.id)
-                        .outerjoin(Cliente, Venda.cliente == Cliente.id)
-                        .outerjoin(Venda.carrinho == Carrinho.id)
-                        .order_by(Venda.criado)
+            resposta = (db.session.query(Venda, Vendedor, Cliente)
                         .filter_by(id=id)
+                        .join(Vendedor, Venda.vendedor == Vendedor.id)
+                        .join(Cliente, Venda.cliente == Cliente.id)
                         ).one()
         except Exception as erro:
-            print(f'Erro [Models - Venda.py]: {erro}')
+            print(f'Erro [Models - Venda.py - get_by_id]: {erro}')
+            raise Exception('Erro ao buscar uma venda')
+        finally:
+            db.session.close()
+        
+        return resposta
+    
+    def get_item_by_id(self, id):
+        """
+            Metodo item pelo seu id
+        """
+        resposta = {}
+        try:
+            resposta = db.session.query(Carrinho).filter_by(id=id).one()
+        except Exception as erro:
+            print(f'Erro [Models - Venda.py - get_item_by_id]: {erro}')
+            raise Exception('Erro ao buscar uma venda')
         finally:
             db.session.close()
         
@@ -81,11 +95,14 @@ class Venda(db.Model):
         try:
             if not self.__verificar_existencia_produto(produtos):
                raise Exception('Erro ao inserir o venda')
+
             db.session.add(venda)
             db.session.commit()
-            self.__add_produtos_carrinho(venda.id, produtos)
+
+            if venda.id:
+                self.__add_produtos_carrinho(venda.id, produtos)
         except Exception as erro:
-            print(f'Erro [Models - Venda.py]: {erro}')
+            print(f'Erro [Models - Venda.py - add]: {erro}')
             raise Exception('Erro ao inserir o venda')
         finally:
             db.session.close()
@@ -100,7 +117,7 @@ class Venda(db.Model):
                 db.session.commit()
             return True
         except Exception as erro:
-            print(f'Erro [Models - Venda.py]: {erro}')
+            print(f'Erro [Models - Venda.py - verificar_existencia_produto]: {erro}')
         finally:
             db.session.close()
     
@@ -114,7 +131,7 @@ class Venda(db.Model):
                 db.session.add(Carrinho(venda=venda_id, produto=produto['id'], valor=produto['valor'], quantidade=produto['quantidade'], comissao=comissao))     
                 db.session.commit()
         except Exception as erro:
-            print(f'Erro [Models - Venda.py]: {erro}')
+            print(f'Erro [Models - Venda.py - add_produtos_carrinho]: {erro}')
             raise Exception('Erro ao inserir ao produtos do carrinho')
         
     def __verificar_comissao(self, comissao):
@@ -129,43 +146,106 @@ class Venda(db.Model):
 
         return float(valor_comissao)
 
-    # def update(self, id, nome, valor, comissao):
-    #     """
-    #         Metodo responsavel por realizar a atualizaçao de um produto pela sua id
-    #     """
-    #     try:
-    #         atualizar = db.session.query(Produto).filter_by(id=id).first()
-    #         if nome:
-    #             atualizar.nome = nome
+    def update(self, id, vendedor, cliente, produtos):
+        """
+            Metodo responsavel por realizar a atualizaçao de venda pela sua id
+        """
+        try:
+            atualizar = db.session.query(Venda).filter_by(id=id).first()
+            self.__update_produtos_carrinho(atualizar.id, produtos)
+
+            if vendedor:
+                atualizar.vendedor = vendedor
             
-    #         if valor:
-    #             atualizar.valor = valor
-
-    #         if comissao:
-    #             atualizar.comissao_percentual = comissao
+            if cliente:
+                atualizar.cliente = cliente
                 
-    #         db.session.commit()
-    #     except Exception as erro:
-    #         print(f"Erro: {erro}")
-    #         raise Exception('Erro ao atualizar o produto')
-    #     finally:
-    #         db.session.close()
+            db.session.commit()
+        except Exception as erro:
+            print(f'Erro [Models - Venda.py - update]: {erro}')
+            raise Exception('Erro ao atualizar o produto')
+        finally:
+            db.session.close()
+    
+    def __update_produtos_carrinho(self, venda_id, produtos):
+        """
+            Metodo atualizar os produtos do carrinho
+        """
+        novos = []
+        try:           
+            for produto in produtos:
+                carrinho_id = produto['carrinho_id']
+                produto_id = produto['id']
+                quantidade = produto['quantidade']
+                valor = produto['valor']
+                comissao = self.__verificar_comissao(produto['comissao'])
+                
+                if not carrinho_id:
+                    novos.append(produto)
+                else:
+                    item = db.session.query(Carrinho).filter_by(id=produto['carrinho_id'], venda=venda_id).first()
 
-    # def delete(self, id):
-    #     """
-    #         Metodo responsavle por deletar um produto para id
-    #     """
-    #     try:
-    #         deletar = db.session.query(Produto).filter_by(id=id).first()
-    #         db.session.delete(deletar)
-    #         db.session.commit()
-    #     except Exception as erro:
-    #         print(erro)
-    #         raise Exception('Erro ao deletar o produto')
-    #     finally:
-    #         db.session.close()
+                    if produto_id:
+                        item.produto = produto_id
 
+                    if quantidade:
+                        item.quantidade = quantidade
+
+                    if comissao:
+                        item.comissao = comissao
+
+                    if valor:
+                        item.valor = valor
+
+                    db.session.commit()
+
+            if novos:
+                self.__add_produtos_carrinho(venda_id, novos)
+                
+        except Exception as erro:
+            print(f'Erro [Models - Venda.py - update_produtos_carrinho]: {erro}')
+            raise Exception('Erro ao atualizar a venda do carrinho')
+
+    def delete_venda(self, id):
+        """
+            Metodo responsavel por deletar uma venda para id
+        """
+        try:
+            deletar = db.session.query(Venda).filter_by(id=id).first()
+            db.session.delete(deletar)
+            db.session.commit()
+        except Exception as erro:
+            print(f'Erro [Models - Venda.py - delete_venda]: {erro}')
+            raise Exception('Erro ao deletar a venda')
+        finally:
+            db.session.close()
+
+    def delete_item_carrinho(self, id_venda, id_item):
+        """
+            Metodo responsavel por deletar uma venda para id
+        """
+        try:
+            deletar = db.session.query(Carrinho).filter_by(id=id_item, venda=id_venda).first()
+            db.session.delete(deletar)
+            db.session.commit()
+        except Exception as erro:
+            print(f'Erro [Models - Venda.py - delete_item_carrinho]: {erro}')
+            raise Exception('Erro ao deletar o produto da venda')
+        finally:
+            db.session.close()
+    
     def __repr__(self) -> str:
         return f"Venda -> id: {self.id}, vendedor: {self.vendedor}, cliente: {self.cliente}, criado: {self.criado}, atualizado: {self.atualizado}"
 
-from models.Carrinho import Carrinho
+class Carrinho(db.Model):
+    id=db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
+    venda=db.Column(db.Integer, db.ForeignKey(Venda.id, ondelete='CASCADE'), nullable=False)
+    produto=db.Column(db.Integer, db.ForeignKey(Produto.id), nullable=False)
+    valor=db.Column(db.Numeric(10,2), nullable=False)
+    comissao=db.Column(db.Numeric(10,2), nullable=False, default=0)
+    quantidade=db.Column(db.Integer, nullable=True, default=0)
+    criado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), nullable=False)
+    atualizado=db.Column(db.DateTime(6), default=db.func.current_timestamp(), onupdate=db.func.current_timestamp(), nullable=False)
+
+    def __repr__(self) -> str:
+        return f"Carrinho -> id: {self.id}, venda: {self.venda}, produto: {self.produto}, valor: {self.valor}, comissao: {self.comissao}, quantidade: {self.quantidade}, criado: {self.criado}, atualizado: {self.atualizado}"
