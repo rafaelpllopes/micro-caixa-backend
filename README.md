@@ -10,6 +10,7 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 
 ### Requisitos para a API
 - Flask==1.1.2
+- Flask-Cors==3.0.10
 - Flask-Migrate==2.6.0
 - Flask-Script==2.0.6
 - Flask-SQLAlchemy==2.4.4
