@@ -67,6 +67,7 @@ API Rest responsavel controlar um sistema de vendas para consumidor
     - venda (fk)
     - produto (fk)
     - valor
+    - comissao
     - quantidade
     - criado
     - atualizado
@@ -86,6 +87,9 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 ├── config.py
 ├── controllers
 │   ├── Cliente.py
+│   ├── Produto.py
+│   ├── Venda.py
+│   └── Vendedor.py
 ├── migrate.py
 ├── migrations
 ├── models
