@@ -226,14 +226,14 @@ def create_app(config_name):
                 else:
                     return jsonify({ 'msg': 'Os dados vendedor, cliente, produtos são obrigatorios', "status": 404 }), 404
             except Exception as erro:
-                print(f'Erro [App - app.py - venda_consultar_atualizar_deletar - DELETE]: {erro}')
+                print(f'Erro [App - app.py - venda_consultar_atualizar_deletar - PUT]: {erro}')
         
         if request.method == 'DELETE':
             try:
                 res = controller.deletar_venda(id)
                 return jsonify(res), res['status']                
             except Exception as erro:
-                return jsonify({ "erro": erro })
+                print(f'Erro [App - app.py - venda_consultar_atualizar_deletar - DELETE]: {erro}')
         
         resposta, status = controller.lista_por_id(id)
         return jsonify(resposta), status
@@ -251,4 +251,28 @@ def create_app(config_name):
         resposta, status = controller.lista_item_por_id(id=id_item)
         return jsonify(resposta), status
 
+    @app.route('/vendas/vendedor/<id>', methods=['GET'])
+    def consutar_comissao_vendedor_por_periodo(id: int):
+        controller = VendaController()
+        
+        if not id:
+            return jsonify({ 'msg': 'Requer id', 'status': 404 }), 404
+        
+        try:
+            inicial = request.json['inicial']
+            final = request.json['final']
+
+            if not inicial and not final:
+                return jsonify({ 'msg': 'Requer data inicial e data final', 'status': 404 }), 404
+            
+            periodo = { 'inicial': inicial, 'final': final }
+        except Exception as erro:
+                print(f'Erro [App - app.py - venda_consultar_atualizar_deletar - GET]: {erro}')
+                return jsonify({ 'msg': 'Não foi possivel calcular a comissao', 'status': 404 }), 404
+
+        res, status = controller.calcular_comissao_vendedor_por_periodo(id=id, periodo=periodo)
+        return jsonify(res), status
+
     return app
+
+

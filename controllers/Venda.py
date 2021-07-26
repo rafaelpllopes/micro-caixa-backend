@@ -159,3 +159,16 @@ class VendaController:
                     'criado': item.criado, 
                     'atualizado': item.atualizado 
                 }
+
+    def calcular_comissao_vendedor_por_periodo(self, id: int, periodo: dict):
+        try:
+            resposta = self.model.comissao_vendedor_por_periodo(id=id, periodo=periodo)
+            return { 'vendedor': resposta[0].Vendedor.nome, 'periodo': periodo, 'comissao': self.__calcular_comissao_vendedor(resposta) }, 200
+        except Exception as erro:
+            print(f'Erro [Controllers - Venda.py - listar_tudo]: {erro}')
+        
+        return [], 404
+
+    def __calcular_comissao_vendedor(self, vendas) -> float:
+        itens_calcular = list(map(lambda item: (item.Carrinho.valor * item.Carrinho.quantidade) * (item.Carrinho.comissao / 100), vendas))
+        return float(reduce(lambda a, b: a + b, itens_calcular))

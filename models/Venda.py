@@ -233,6 +233,24 @@ class Venda(db.Model):
             raise Exception('Erro ao deletar o produto da venda')
         finally:
             db.session.close()
+
+    def comissao_vendedor_por_periodo(self, id: int, periodo: dict):
+        resposta = []
+        try:
+            resposta = (db.session.query(Vendedor, Venda, Carrinho)
+                        .filter_by(id=id)
+                        .join(Venda, Venda.vendedor == Vendedor.id)
+                        .filter(Venda.criado >= periodo['inicial'], Venda.criado <= periodo['final'])
+                        .join(Carrinho, Carrinho.venda == Venda.id)
+                        .order_by(Venda.criado)
+                        ).all()
+        except Exception as erro:
+            print(f'Erro [Models - Venda.py - comissao_vendedor_por_periodo]: {erro}')
+            raise Exception('Erro ao listar as vendas')
+        finally:
+            db.session.close()
+        
+        return resposta
     
     def __repr__(self) -> str:
         return f"Venda -> id: {self.id}, vendedor: {self.vendedor}, cliente: {self.cliente}, criado: {self.criado}, atualizado: {self.atualizado}"
