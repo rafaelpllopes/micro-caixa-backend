@@ -19,7 +19,7 @@ class Vendedor(db.Model):
         try:
             resposta = db.session.query(Vendedor).all()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Vendedor.py - get_all]: {erro}')
             raise Exception('Erro ao listar os vendedores')
         finally:
             db.session.close()
@@ -34,7 +34,7 @@ class Vendedor(db.Model):
         try:
             resposta = db.session.query(Vendedor).filter_by(id=id).one()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Vendedor.py - get_by_id]: {erro}')
         finally:
             db.session.close()
         
@@ -48,7 +48,7 @@ class Vendedor(db.Model):
             db.session.add(vendedor)
             db.session.commit()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Vendedor.py - add]: {erro}')
             raise Exception('Erro ao inserir o vendedor')
         finally:
             db.session.close()
@@ -62,7 +62,7 @@ class Vendedor(db.Model):
             atualizar.nome = nome
             db.session.commit()
         except Exception as erro:
-            print(f"Erro: {erro}")
+            print(f'Erro [models - Vendedor.py - update]: {erro}')
             raise Exception('Erro ao atualizar o vendedor')
         finally:
             db.session.close()
@@ -76,7 +76,7 @@ class Vendedor(db.Model):
             db.session.delete(deletar)
             db.session.commit()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Vendedor.py - delete]: {erro}')
             raise Exception('Erro ao deletar o vendedor')
         finally:
             db.session.close()

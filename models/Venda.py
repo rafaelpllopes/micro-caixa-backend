@@ -135,6 +135,9 @@ class Venda(db.Model):
             raise Exception('Erro ao inserir ao produtos do carrinho')
         
     def __verificar_comissao(self, comissao):
+        """
+            Metodo verifica a comissao de um item de acordo com o periodo para atribuir corretamente de acordo com o periodo
+        """
         hora = datetime.now().strftime('%H:%M:%S')
         if hora >= '00:00:00' and hora <= '12:00:00':
             valor_comissao = 5

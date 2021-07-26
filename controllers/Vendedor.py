@@ -16,7 +16,7 @@ class VendedorController:
             resposta = self.vendedor_model.get_all()
             return list(map(lambda vendedor: self.__traduz(vendedor), resposta)), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Vendedor.py - listar_tudo]: {erro}')
         
         return [], 404
     
@@ -29,7 +29,7 @@ class VendedorController:
             if resposta:
                 return self.__traduz(resposta), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Vendedor.py - lista_por_id]: {erro}')
             return { 'msg': 'vendedor não encontrado', 'status': 404 }, 404
 
         return {}, 404
@@ -42,7 +42,7 @@ class VendedorController:
             self.vendedor_model.add(Vendedor(nome = nome))
             return { 'msg': 'vendedor cadastrado com sucesso', 'status': 201 }, 201
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Vendedor.py - inserir]: {erro}')
             return { 'msg': 'Não foi possivel cadastrar o vendedor', 'status': 400 }, 400
 
     def atualizar(self, id, nome):
@@ -53,7 +53,7 @@ class VendedorController:
             self.vendedor_model.update(id, nome)
             return { 'msg': 'vendedor alterado com sucesso', 'status': 202 }, 202
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Vendedor.py - atualizar]: {erro}')
             return { 'msg': 'vendedor não encontrado', 'status': 404 }, 404
 
     def deletar(self, id):
@@ -62,10 +62,10 @@ class VendedorController:
         """
         try:
             self.vendedor_model.delete(id)
-            return { 'msg': 'vendedor deletado com sucesso', 'status': 202 }
+            return { 'msg': 'vendedor deletado com sucesso', 'status': 202 }, 202
         except Exception as erro:
-            print(f'Erro: {erro}')
-            return { 'msg': 'vendedor não encontrado', 'status': 404 }
+            print(f'Erro [Controllers - Vendedor.py - deletar]: {erro}')
+            return { 'msg': 'vendedor não encontrado', 'status': 404 }, 404
 
     def __traduz(self, vendedor):
         """

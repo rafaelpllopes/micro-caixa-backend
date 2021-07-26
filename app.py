@@ -42,7 +42,7 @@ def create_app(config_name):
                     res, status = cliente_controller.inserir(nome)
                     return jsonify(res), status
             except Exception as erro:
-                print({ "Erro: ": erro })
+                print(f'Erro [app.py - clientes_listar_inserir - POST]: {erro}')
         
         resposta, status = cliente_controller.listar_tudo()
         return jsonify(resposta), status
@@ -64,6 +64,7 @@ def create_app(config_name):
                     res, status = cliente_controller.atualizar(id, nome)
                     return jsonify(res), status
             except Exception as erro:
+                print(f'Erro [app.py - cliente_consultar_atualizar_deletar - PUT]: {erro}')
                 return jsonify({ "erro": erro })
         
         if request.method == 'DELETE':
@@ -71,6 +72,7 @@ def create_app(config_name):
                 res = cliente_controller.deletar(id)
                 return jsonify(res), res['status']                
             except Exception as erro:
+                print(f'Erro [app.py - cliente_consultar_atualizar_deletar - DELETE]: {erro}')
                 return jsonify({ "erro": erro })
         
         resposta, status = cliente_controller.lista_por_id(id)
@@ -90,7 +92,7 @@ def create_app(config_name):
                     res, status = controller.inserir(nome)
                     return jsonify(res), status
             except Exception as erro:
-                print({ "Erro: ": erro })
+                print(f'Erro [app.py - vendedor_listar_inserir - POST]: {erro}')
         
         resposta, status = controller.listar_tudo()
         return jsonify(resposta), status
@@ -112,13 +114,14 @@ def create_app(config_name):
                     res, status = controller.atualizar(id, nome)
                     return jsonify(res), status
             except Exception as erro:
-                return jsonify({ "erro": erro })
+                print(f'Erro [app.py - vendedor_consultar_atualizar_deletar - PUT]: {erro}')
         
         if request.method == 'DELETE':
             try:
                 res = controller.deletar(id)
                 return jsonify(res), res['status']                
             except Exception as erro:
+                print(f'Erro [app.py - vendedor_consultar_atualizar_deletar - DELETE]: {erro}')
                 return jsonify({ "erro": erro })
         
         resposta, status = controller.lista_por_id(id)
@@ -143,7 +146,7 @@ def create_app(config_name):
                 else:
                     return jsonify({ 'msg': 'Os dados nome, valor, comissao são obrigatorios', "status": 404 }), 404
             except Exception as erro:
-                print({ "Erro: ": erro })
+                print(f'Erro [app.py - produto_listar_inserir - POST]: {erro}')
         
         resposta, status = controller.listar_tudo()
         return jsonify(resposta), status
@@ -169,6 +172,7 @@ def create_app(config_name):
                 else:
                     return jsonify({ 'msg': 'Os dados nome, valor, comissao são obrigatorios', "status": 404 }), 404
             except Exception as erro:
+                print(f'Erro [app.py - produto_consultar_atualizar_deletar - PUT]: {erro}')
                 return jsonify({ "erro": erro })
         
         if request.method == 'DELETE':
@@ -176,6 +180,7 @@ def create_app(config_name):
                 res = controller.deletar(id)
                 return jsonify(res), res['status']                
             except Exception as erro:
+                print(f'Erro [app.py - produto_consultar_atualizar_deletar - DELETE]: {erro}')
                 return jsonify({ "erro": erro })
         
         resposta, status = controller.lista_por_id(id)
@@ -200,7 +205,7 @@ def create_app(config_name):
                 else:
                     return jsonify({ 'msg': 'Os dados vendedor, cliente, produtos são obrigatorios', "status": 404 }), 404
             except Exception as erro:
-                print({ "Erro: ": erro })
+                print(f'Erro [app.py - venda_listar_inserir - POST]: {erro}')
         
         resposta, status = controller.listar_tudo()
         return jsonify(resposta), status

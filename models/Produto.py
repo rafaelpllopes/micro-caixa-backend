@@ -21,7 +21,7 @@ class Produto(db.Model):
         try:
             resposta = db.session.query(Produto).all()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Produto.py - get_all]: {erro}')
             raise Exception('Erro ao listar os produtos')
         finally:
             db.session.close()
@@ -36,7 +36,7 @@ class Produto(db.Model):
         try:
             resposta = db.session.query(Produto).filter_by(id=id).one()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Produto.py - get_by_id]: {erro}')
         finally:
             db.session.close()
         
@@ -50,7 +50,7 @@ class Produto(db.Model):
             db.session.add(produto)
             db.session.commit()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Produto.py - add]: {erro}')
             raise Exception('Erro ao inserir o produto')
         finally:
             db.session.close()
@@ -72,7 +72,7 @@ class Produto(db.Model):
                 
             db.session.commit()
         except Exception as erro:
-            print(f"Erro: {erro}")
+            print(f'Erro [models - Produto.py - update]: {erro}')
             raise Exception('Erro ao atualizar o produto')
         finally:
             db.session.close()
@@ -86,7 +86,7 @@ class Produto(db.Model):
             db.session.delete(deletar)
             db.session.commit()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Produto.py - delete]: {erro}')
             raise Exception('Erro ao deletar o produto')
         finally:
             db.session.close()

@@ -32,7 +32,7 @@ class VendaController:
             if resposta:
                 return self.__traduz(resposta), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Venda.py - lista_por_id]: {erro}')
             return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
 
         return {}, 404
@@ -46,7 +46,7 @@ class VendaController:
             if resposta:
                 return self.__traduz_item_carrinho(resposta), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Venda.py - lista_item_por_id]: {erro}')
             return { 'msg': 'Item não encontrado', 'status': 404 }, 404
 
         return {}, 404
@@ -85,7 +85,7 @@ class VendaController:
             self.model.delete_venda(id)
             return { 'msg': 'Venda deletado com sucesso', 'status': 202 }, 202
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Venda.py - deletar_venda]: {erro}')
             return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
     
     def deletar_item_carrinho(self, id_venda, id_item):
@@ -96,10 +96,13 @@ class VendaController:
             self.model.delete_item_carrinho(id_venda=id_venda, id_item=id_item)
             return { 'msg': 'Item removido com sucesso', 'status': 202 }, 202
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Venda.py - deletar_item_carrinho]: {erro}')
             return { 'msg': 'Venda não encontrado', 'status': 404 }, 404
 
     def __consulta_produtos(self, venda_id):
+        """
+            Metodo responsavel por trazer os itens de um carrionho pelo id do vendedor
+        """
         return self.model.get_itens_carrinho(venda_id)
 
     def __traduz(self, venda):
@@ -118,7 +121,10 @@ class VendaController:
         }
     
 
-    def __traz_produtos(self, itens):        
+    def __traz_produtos(self, itens):
+        """
+            Metodo responsavel por devolver uma lista com os itens de um carrinho traduzida em dicionario para cada item do carrinho
+        """      
         return list(map(lambda item: self.__traduz_carrinho(item), itens))
 
     def __traduz_carrinho(self, item):
@@ -161,6 +167,11 @@ class VendaController:
                 }
 
     def calcular_comissao_vendedor_por_periodo(self, id: int, periodo: dict):
+        """
+            Metodo devolve um dicionario com os dados do vendedor, periodo e comissao calculada
+            [id] id do vendedor, id: int
+            [periodo] data inicial e final desejada, periodo { 'inicial': 'YYYY-mm-dd HH:MM:SS', 'final': 'YYYY-mm-dd HH:MM:SS' }
+        """
         try:
             resposta = self.model.comissao_vendedor_por_periodo(id=id, periodo=periodo)
             return { 'vendedor': resposta[0].Vendedor.nome, 'periodo': periodo, 'comissao': self.__calcular_comissao_vendedor(resposta) }, 200
@@ -170,5 +181,8 @@ class VendaController:
         return [], 404
 
     def __calcular_comissao_vendedor(self, vendas) -> float:
+        """
+            Metodo que calcula a comisao de um vendedor pelo periodo informado
+        """
         itens_calcular = list(map(lambda item: (item.Carrinho.valor * item.Carrinho.quantidade) * (item.Carrinho.comissao / 100), vendas))
         return float(reduce(lambda a, b: a + b, itens_calcular))

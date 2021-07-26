@@ -19,7 +19,7 @@ class Cliente(db.Model):
         try:
             resposta = db.session.query(Cliente).all()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Cliente.py - get_all]: {erro}')
             raise Exception('Erro ao listar os clientes')
         finally:
             db.session.close()
@@ -34,7 +34,7 @@ class Cliente(db.Model):
         try:
             resposta = db.session.query(Cliente).filter_by(id=id).one()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Cliente.py - get_by_id]: {erro}')
         finally:
             db.session.close()
         
@@ -48,7 +48,7 @@ class Cliente(db.Model):
             db.session.add(cliente)
             db.session.commit()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Cliente.py - add]: {erro}')
             raise Exception('Erro ao inserir o cliente')
         finally:
             db.session.close()
@@ -62,7 +62,7 @@ class Cliente(db.Model):
             atualizar.nome = nome
             db.session.commit()
         except Exception as erro:
-            print(f"Erro: {erro}")
+            print(f'Erro [models - Cliente.py - update]: {erro}')
             raise Exception('Erro ao atualizar o cliente')
         finally:
             db.session.close()
@@ -76,7 +76,7 @@ class Cliente(db.Model):
             db.session.delete(deletar)
             db.session.commit()
         except Exception as erro:
-            print(erro)
+            print(f'Erro [models - Cliente.py - delete]: {erro}')
             raise Exception('Erro ao deletar o cliente')
         finally:
             db.session.close()

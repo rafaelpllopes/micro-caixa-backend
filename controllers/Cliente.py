@@ -16,7 +16,7 @@ class ClienteController:
             resposta = self.cliente_model.get_all()
             return list(map(lambda cliente: self.__traduz(cliente), resposta)), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Cliente.py - listar_tudo]: {erro}')
         
         return [], 404
     
@@ -29,7 +29,7 @@ class ClienteController:
             if resposta:
                 return self.__traduz(resposta), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Cliente.py - lista_por_id]: {erro}')
             return { 'msg': 'Cliente não encontrado', 'status': 404 }, 404
 
         return {}, 404
@@ -42,7 +42,7 @@ class ClienteController:
             self.cliente_model.add(Cliente(nome = nome))
             return { 'msg': 'Cliente cadastrado com sucesso', 'status': 201 }, 201
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Cliente.py - inserir]: {erro}')
             return { 'msg': 'Não foi possivel cadastrar o cliente', 'status': 400 }, 400
 
     def atualizar(self, id, nome):
@@ -53,7 +53,7 @@ class ClienteController:
             self.cliente_model.update(id, nome)
             return { 'msg': 'Cliente alterado com sucesso', 'status': 202 }, 202
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Cliente.py - atualizar]: {erro}')
             return { 'msg': 'Cliente não encontrado', 'status': 404 }, 404
 
     def deletar(self, id):
@@ -64,7 +64,7 @@ class ClienteController:
             self.cliente_model.delete(id)
             return { 'msg': 'Cliente deletado com sucesso', 'status': 202 }
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Cliente.py - deletar]: {erro}')
             return { 'msg': 'Cliente não encontrado', 'status': 404 }
 
     def __traduz(self, cliente):

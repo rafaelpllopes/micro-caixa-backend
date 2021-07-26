@@ -16,7 +16,7 @@ class ProdutoController:
             resposta = self.produto_model.get_all()
             return list(map(lambda produto: self.__traduz(produto), resposta)), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Produto.py - listar_tudo]: {erro}')
         
         return [], 404
     
@@ -29,7 +29,7 @@ class ProdutoController:
             if resposta:
                 return self.__traduz(resposta), 200
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Produto.py - lista_por_id]: {erro}')
             return { 'msg': 'Produto não encontrado', 'status': 404 }, 404
 
         return {}, 404
@@ -48,10 +48,13 @@ class ProdutoController:
             self.produto_model.add(Produto(nome=nome, valor=valor, comissao_percentual=comissao))
             return { 'msg': 'Produto cadastrado com sucesso', 'status': 201 }, 201
         except Exception as erro:
-            print(f'Erro: {erro}')
+            print(f'Erro [Controllers - Produto.py - inserir]: {erro}')
             return { 'msg': 'Não foi possivel cadastrar o produto', 'status': 400 }, 400
 
     def __verificar_comissao(self, comissao):
+        """
+            Metodo responsavel por verificar se comissao é maior que 10, sendo a comissão maxima permitida
+        """
         if comissao > float(10):
             return True
         return False
@@ -68,24 +71,24 @@ class ProdutoController:
 
         try:
             self.produto_model.update(id, nome, valor, comissao)
-            return { 'msg': 'Cliente alterado com sucesso', 'status': 202 }, 202
+            return { 'msg': 'Produto alterado com sucesso', 'status': 202 }, 202
         except Exception as erro:
-            print(f'Erro: {erro}')
-            return { 'msg': 'Cliente não encontrado', 'status': 404 }, 404
+            print(f'Erro [Controllers - Produto.py - atualizar]: {erro}')
+            return { 'msg': 'Produto não encontrado', 'status': 404 }, 404
 
     def deletar(self, id):
         """
-            Metodo responsavel por deletar um cliente pela id
+            Metodo responsavel por deletar um produto pela id
         """
         if not id:
             return { 'msg': 'Não foi possivel deletar o produto', 'status': 400 }, 400
 
         try:
             self.produto_model.delete(id)
-            return { 'msg': 'Cliente deletado com sucesso', 'status': 202 }
+            return { 'msg': 'Produto deletado com sucesso', 'status': 202 }, 202
         except Exception as erro:
-            print(f'Erro: {erro}')
-            return { 'msg': 'Cliente não encontrado', 'status': 404 }
+            print(f'Erro [Controllers - Produto.py - deletar]: {erro}')
+            return { 'msg': 'Produto não encontrado', 'status': 404 }
 
     def __traduz(self, produto):
         """
