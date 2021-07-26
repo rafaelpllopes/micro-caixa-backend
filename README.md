@@ -38,6 +38,26 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 - ```python migrate.py db migrate```
 - ```python migrate.py db upgrade```
 
+## Como usar a API e Formato de Resposta
+
+### Cliente
+    | Rota | Method | Request | Response |
+    |--- |--- |--- |--- |
+    | /clientes | POST | { "nome": "" } | { "msg": "Cliente cadastrado com sucesso", "status": 201 } |
+    | /clientes | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
+    | /clientes/<id> | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
+    | /clientes/<id> | PUT | { "nome": "" } | { "msg": "Cliente alterado com sucesso", "status": 202 } |
+    | /clientes/<id> | DELETE | | { "msg": "Cliente deletado com sucesso", "status": 202 } |
+
+### Vendedor
+    | Rota | Method | Request | Response |
+    |--- |--- |--- |--- |
+    | /vendedores | POST | { "nome": "" } | { "msg": "Vendedor cadastrado com sucesso", "status": 201 } |
+    | /vendedores | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
+    | /vendedores/<id> | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
+    | /vendedores/<id> | PUT | { "nome": "" } | { "msg": "Vendedor alterado com sucesso", "status": 202 } |
+    | /vendedores/<id> | DELETE | | { "msg": "Vendedor deletado com sucesso", "status": 202 } |
+
 ### Estrutura do Banco de Dados 
 - **Produto**
    - id
