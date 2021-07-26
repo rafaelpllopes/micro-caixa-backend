@@ -38,25 +38,45 @@ API Rest responsavel controlar um sistema de vendas para consumidor
 - ```python migrate.py db migrate```
 - ```python migrate.py db upgrade```
 
-## Como usar a API e Formato de Resposta
+## Como usar a API (Request/Response)
 
 ### Cliente
-    | Rota | Method | Request | Response |
-    |--- |--- |--- |--- |
-    | /clientes | POST | { "nome": "" } | { "msg": "Cliente cadastrado com sucesso", "status": 201 } |
-    | /clientes | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
-    | /clientes/<id> | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
-    | /clientes/<id> | PUT | { "nome": "" } | { "msg": "Cliente alterado com sucesso", "status": 202 } |
-    | /clientes/<id> | DELETE | | { "msg": "Cliente deletado com sucesso", "status": 202 } |
+| Rota | Method | Request | Response |
+| --- | --- | --- | --- |
+| /clientes | POST | { "nome": "" } | { "msg": "Cliente cadastrado com sucesso", "status": 201 } |
+| /clientes | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
+| /clientes/id | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
+| /clientes/id | PUT | { "nome": "" } | { "msg": "Cliente alterado com sucesso", "status": 202 } |
+| /clientes/id | DELETE | | { "msg": "Cliente deletado com sucesso", "status": 202 } |
 
 ### Vendedor
-    | Rota | Method | Request | Response |
-    |--- |--- |--- |--- |
-    | /vendedores | POST | { "nome": "" } | { "msg": "Vendedor cadastrado com sucesso", "status": 201 } |
-    | /vendedores | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
-    | /vendedores/<id> | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
-    | /vendedores/<id> | PUT | { "nome": "" } | { "msg": "Vendedor alterado com sucesso", "status": 202 } |
-    | /vendedores/<id> | DELETE | | { "msg": "Vendedor deletado com sucesso", "status": 202 } |
+| Rota | Method | Request | Response |
+| --- | --- | --- | --- |
+| /vendedores | POST | { "nome": "" } | { "msg": "Vendedor cadastrado com sucesso", "status": 201 } |
+| /vendedores | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
+| /vendedores/id | GET |  | { "atualizado": "", "criado": "", "id": , "nome": ""} |
+| /vendedores/id | PUT | { "nome": "" } | { "msg": "Vendedor alterado com sucesso", "status": 202 } |
+| /vendedores/id | DELETE | | { "msg": "Vendedor deletado com sucesso", "status": 202 } |
+    
+### Produto
+| Rota | Method | Request | Response |
+| --- | --- | --- | --- |
+| /produtos | POST | { "nome": "", "valor": , "comissao" } | { "msg": "Produto cadastrado com sucesso", "status": 201 } |
+| /produtos | GET |  | { "atualizado": , "comissao": , "criado": , "id": , "nome": , "valor":  } |
+| /produtos/id | GET |  | { "atualizado": , "comissao": , "criado": , "id": , "nome": , "valor":  }|
+| /produtos/id | PUT | { "nome": "", "valor": , "comissao" }  | { "msg": "Produto alterado com sucesso", "status": 202 } |
+| /produtos/id | DELETE | | { "msg": "Produto deletado com sucesso", "status": 202 } |
+    
+### Venda
+| Rota | Method | Request | Response |
+| --- | --- | --- | --- |
+| /vendas | POST | { "vendedor": , "cliente": 5, "produtos": [ { "id": , "valor": , "quantidade": , "comissao":  } ] } | { "msg": "Venda cadastrado com sucesso", "status": 201 } |
+| /vendas | GET |  | [ { "id": , "comissao_vendedor": , { "cliente": { "id": , "nome": }, "itens:": [ { "carrinho_id": , "comissao": , "produto": , "produto_id": , "quantidade": , "valor":  },], "total_venda": ,   "vendedor": { "id": , "nome": "" } } ] |
+| /vendas/id | GET |  | { "id": , "comissao_vendedor": , { "cliente": { "id": , "nome": }, "itens:": [ { "carrinho_id": , "comissao": , "produto": , "produto_id": , "quantidade": , "valor":  },], "total_venda": ,   "vendedor": { "id": , "nome": "" } } |
+| /vendas/id | PUT | {"vendedor": 3,"cliente": 5,	"produtos": [ { "carrinho_id": 34, "id": 3, "valor": 150, "quantidade": 2, "comissao": 2 }]} | { "msg": "Venda alterado com sucesso", "status": 202 } |
+| /vendas/id | DELETE | | { "msg": "Venda deletado com sucesso", "status": 202 } |
+| /vendas/vendedor/id | GET | { "inicial": "2021-07-26 00:00:00",	"final": "2021-07-26 23:59:59" } | { "comissao": ,  "periodo": { "final": , "inicial":   }, "vendedor":  } |
+    
 
 ### Estrutura do Banco de Dados 
 - **Produto**
