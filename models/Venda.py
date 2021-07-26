@@ -140,7 +140,10 @@ class Venda(db.Model):
         """
         hora = datetime.now().strftime('%H:%M:%S')
         if hora >= '00:00:00' and hora <= '12:00:00':
-            valor_comissao = 5
+            if comissao > 5:
+                valor_comissao = 5
+            else:
+                valor_comissao = comissao
         else:
             if comissao < 4:
                 valor_comissao = 4

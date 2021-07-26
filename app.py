@@ -272,7 +272,7 @@ def create_app(config_name):
             
             periodo = { 'inicial': inicial, 'final': final }
         except Exception as erro:
-                print(f'Erro [App - app.py - venda_consultar_atualizar_deletar - GET]: {erro}')
+                print(f'Erro [App - app.py - consutar_comissao_vendedor_por_periodo - GET]: {erro}')
                 return jsonify({ 'msg': 'Não foi possivel calcular a comissao', 'status': 404 }), 404
 
         res, status = controller.calcular_comissao_vendedor_por_periodo(id=id, periodo=periodo)
