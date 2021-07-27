@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import re
 from flask import Flask, jsonify, request, make_response
-from flask_cors.extension import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS, cross_origin
 
 from config import app_active, app_config
 from controllers.Cliente import ClienteController
 from controllers.Vendedor import VendedorController
 from controllers.Produto import ProdutoController
 from controllers.Venda import VendaController
-from flask_cors import CORS, cross_origin
 
 config = app_config[app_active]
 
@@ -21,7 +20,9 @@ cors_config = {
 
 def create_app(config_name):
     app = Flask(__name__)
-    CORS(app, resources={r'/*': cors_config}, origins='*', methods=['GET', 'POST', 'PUT', 'DELETE'], allow_headers='*')
+    CORS(app=app, resources={r'/*': {
+        "origins": "*"
+    }})
     app.secret_key = config.SECRET
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
@@ -31,15 +32,13 @@ def create_app(config_name):
     db.init_app(app)
 
     @app.route('/', methods=['GET'])
-    @cross_origin()
     def index():
         """
             Metodo somente para informar se a API esta rodando
         """
         return jsonify({ 'status' : 'API está rodando' }), 200
 
-    @app.route('/clientes', methods=['GET', 'POST', 'OPTIONS'])
-    @cross_origin()
+    @app.route('/clientes', methods=['GET', 'POST'])
     def clientes_listar_inserir():
         """
             Metodo para inserir um cliente "POST", ou trazer todos os clientes "GET"
@@ -56,11 +55,13 @@ def create_app(config_name):
                 print(f'Erro [app.py - clientes_listar_inserir - POST]: {erro}')
                 return { 'msg': 'Não foi possivel cadastrar o cliente', 'status': 412 }, 412
         
-        resposta, status = cliente_controller.listar_tudo()
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = cliente_controller.listar_tudo()
+            return jsonify(resposta), status
+        
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
 
     @app.route('/clientes/<id>', methods=['GET', 'PUT', 'DELETE'])
-    @cross_origin()
     def cliente_consultar_atualizar_deletar(id: int):
         """
             Metodo para consultar "GET", ou atualizar "PUT", ou deletar "DELETE" um cliente pela id
@@ -88,11 +89,13 @@ def create_app(config_name):
                 print(f'Erro [app.py - cliente_consultar_atualizar_deletar - DELETE]: {erro}')
                 return jsonify({ "erro": erro })
         
-        resposta, status = cliente_controller.lista_por_id(id)
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = cliente_controller.lista_por_id(id)
+            return jsonify(resposta), status
+        
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
 
     @app.route('/vendedores', methods=['GET', 'POST'])
-    @cross_origin()
     def vendedor_listar_inserir():
         """
             Metodo para inserir um vendedor "POST", ou trazer todos os vendedores "GET"
@@ -108,11 +111,13 @@ def create_app(config_name):
             except Exception as erro:
                 print(f'Erro [app.py - vendedor_listar_inserir - POST]: {erro}')
         
-        resposta, status = controller.listar_tudo()
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = controller.listar_tudo()
+            return jsonify(resposta), status
+        
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
 
     @app.route('/vendedores/<id>', methods=['GET', 'PUT', 'DELETE'])
-    @cross_origin()
     def vendedor_consultar_atualizar_deletar(id: int):
         """
             Metodo para consultar "GET", ou atualizar "PUT", ou deletar "DELETE" um vendedor pela id
@@ -139,11 +144,13 @@ def create_app(config_name):
                 print(f'Erro [app.py - vendedor_consultar_atualizar_deletar - DELETE]: {erro}')
                 return jsonify({ "erro": erro })
         
-        resposta, status = controller.lista_por_id(id)
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = controller.lista_por_id(id)
+            return jsonify(resposta), status
+        
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
 
     @app.route('/produtos', methods=['GET', 'POST'])
-    @cross_origin()
     def produto_listar_inserir():
         """
             Metodo para inserir um produto "POST", ou trazer todos os Produto "GET"
@@ -164,11 +171,13 @@ def create_app(config_name):
             except Exception as erro:
                 print(f'Erro [app.py - produto_listar_inserir - POST]: {erro}')
         
-        resposta, status = controller.listar_tudo()
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = controller.listar_tudo()
+            return jsonify(resposta), status
+
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
 
     @app.route('/produtos/<id>', methods=['GET', 'PUT', 'DELETE'])
-    @cross_origin()
     def produto_consultar_atualizar_deletar(id: int):
         """
             Metodo para consultar "GET", ou atualizar "PUT", ou deletar "DELETE" um produto pela id
@@ -200,11 +209,13 @@ def create_app(config_name):
                 print(f'Erro [app.py - produto_consultar_atualizar_deletar - DELETE]: {erro}')
                 return jsonify({ "erro": erro })
         
-        resposta, status = controller.lista_por_id(id)
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = controller.lista_por_id(id)
+            return jsonify(resposta), status
+        
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
     
     @app.route('/vendas', methods=['GET', 'POST'])
-    @cross_origin()
     def venda_listar_inserir():
         """
             Metodo para inserir um vendas "POST", ou trazer todos os vendas "GET"
@@ -225,11 +236,13 @@ def create_app(config_name):
             except Exception as erro:
                 print(f'Erro [app.py - venda_listar_inserir - POST]: {erro}')
         
-        resposta, status = controller.listar_tudo()
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = controller.listar_tudo()
+            return jsonify(resposta), status
+        
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
 
     @app.route('/vendas/<id>', methods=['GET', 'PUT', 'DELETE'])
-    @cross_origin()
     def venda_consultar_atualizar_deletar(id: int):
         """
             Metodo para consultar "GET", ou atualizar "PUT", ou deletar "DELETE" um produto pela id
@@ -259,11 +272,13 @@ def create_app(config_name):
             except Exception as erro:
                 print(f'Erro [App - app.py - venda_consultar_atualizar_deletar - DELETE]: {erro}')
         
-        resposta, status = controller.lista_por_id(id)
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = controller.lista_por_id(id)
+            return jsonify(resposta), status
+        
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
     
     @app.route('/vendas/<id_venda>/itens/<id_item>', methods=['GET', 'DELETE'])
-    @cross_origin()
     def remover_item_venda(id_venda: int, id_item: int):
         controller = VendaController()
         if request.method == 'DELETE':
@@ -273,11 +288,13 @@ def create_app(config_name):
             res, status = controller.deletar_item_carrinho(id_venda=id_venda, id_item=id_item)
             return jsonify(res), status
         
-        resposta, status = controller.lista_item_por_id(id=id_item)
-        return jsonify(resposta), status
+        if request.method == 'GET':
+            resposta, status = controller.lista_item_por_id(id=id_item)
+            return jsonify(resposta), status
+        
+        return jsonify({ 'msg': 'Não foi possivel atender a requisição', 'status': 400 }), 400
 
     @app.route('/vendas/vendedor/<id>', methods=['GET'])
-    @cross_origin()
     def consutar_comissao_vendedor_por_periodo(id: int):
         controller = VendaController()
         
